@@ -1,0 +1,4 @@
+{
+    "dburl":"user:password@tcp(server:3306)/databaseName",
+    "rssfile":"rssfile"
+}
