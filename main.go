@@ -1,33 +1,18 @@
 package main
 
 import (
-	"bufio"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/mmcdole/gofeed"
 )
 
 type Config struct {
 	DbUrl   string `json:"dburl"`
 	DbName  string `json:"dbname"`
 	RssFile string `json:"rssfile"`
-}
-
-// GetRssUrls removes empty lines and lines beginning with #
-func getRssUrls(r *bufio.Reader) (urls []string) {
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if len(line) > 0 && !strings.HasPrefix(line, "#") {
-			urls = append(urls, line)
-		}
-	}
-	return urls
 }
 
 func run() error {
@@ -47,7 +32,7 @@ func run() error {
 		return fmt.Errorf("Can not open %s ERROR: %s", config.RssFile, err)
 	}
 
-	urls := getRssUrls(bufio.NewReader(rssReader))
+	getFromSvtPlay(rssReader)
 
 	fmt.Println(urls)
 
@@ -58,18 +43,16 @@ func run() error {
 	}
 	defer db.Close()
 
-	var one, two string
 	rows, err := db.Query("SELECT * FROM test")
-	if err != nil {
-		return err
-	}
-	for rows.Next() {
-		rows.Scan(&one, &two)
-	}
 	if err != nil {
 		return fmt.Errorf("Query failed ERROR: %s", err)
 	}
-	fmt.Println("Connected to:", one, two)
+	for rows.Next() {
+		var id int
+		var name string
+		rows.Scan(&id, &name)
+		fmt.Println("Db has", id, name)
+	}
 
 	return nil
 }
