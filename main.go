@@ -32,9 +32,10 @@ func run() error {
 		return fmt.Errorf("Can not open %s ERROR: %s", config.RssFile, err)
 	}
 
-	getFromSvtPlay(rssReader)
-
-	fmt.Println(urls)
+	err = getFromSvtPlay(rssReader)
+	if err != nil {
+		return err
+	}
 
 	// Create the database handle, confirm driver is present
 	db, err := sql.Open("mysql", config.DbUrl)
