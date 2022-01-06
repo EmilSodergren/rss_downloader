@@ -32,11 +32,6 @@ func run() error {
 		return fmt.Errorf("Can not open %s ERROR: %s", config.RssFile, err)
 	}
 
-	err = getFromSvtPlay(rssReader)
-	if err != nil {
-		return err
-	}
-
 	// Create the database handle, confirm driver is present
 	db, err := sql.Open("mysql", config.DbUrl)
 	if err != nil {
@@ -44,15 +39,9 @@ func run() error {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT * FROM test")
+	err = getFromSvtPlay(db, rssReader)
 	if err != nil {
-		return fmt.Errorf("Query failed ERROR: %s", err)
-	}
-	for rows.Next() {
-		var id int
-		var name string
-		rows.Scan(&id, &name)
-		fmt.Println("Db has", id, name)
+		return err
 	}
 
 	return nil
