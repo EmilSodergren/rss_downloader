@@ -16,7 +16,8 @@ import (
 const dateFmt = "2006-01-02 15:04:05"
 
 var createSvtplayTableStmt = `CREATE TABLE IF NOT EXISTS svtplay (
-	guid text not null primary key,
+	id INTEGER not null primary key AUTO_INCREMENT,
+	guid TEXT(512) not null,
 	title text,
 	link text,
 	description text,
